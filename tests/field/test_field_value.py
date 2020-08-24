@@ -12,15 +12,15 @@ def test_init():
 
 
 def test_no_default_value():
-    field_instance = FieldValue(field=Field())
+    field_value = FieldValue(field=Field())
 
     with pytest.raises(DefaultNotProvided):
-        field_instance.get()
+        field_value.get()
 
 
 def test_default_value():
-    field_instance = FieldValue(field=Field(default="hello"))
-    assert field_instance.get() == "hello"
+    field_value = FieldValue(field=Field(default="hello"))
+    assert field_value.get() == "hello"
 
 
 def test_getter_and_setter():
@@ -28,3 +28,7 @@ def test_getter_and_setter():
     value.set("hello")
 
     assert value.get() == "hello"
+
+def test_optional_field_not_provided_default():
+    field_value = FieldValue(field=Field(optional=False))
+    assert field_value.is_not_provided()

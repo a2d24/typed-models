@@ -24,3 +24,6 @@ def test_field_attributes_added_to_field_names():
 def test_field_attributes_added_to_metadata():
     assert list(TestModelMeta._model_meta['fields'].keys()) == ['test_field']
     assert isinstance(TestModelMeta._model_meta['fields']['test_field'], Field)
+
+def test_field_name_is_assigned():
+    assert TestModelMeta._model_meta['fields']['test_field'].field_name == 'test_field'

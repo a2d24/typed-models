@@ -1,4 +1,4 @@
-from .exceptions import DefaultNotProvided
+from .exceptions import DefaultNotProvided, UnassignedOptionalFieldAccessed
 
 NOT_PROVIDED = object()
 
@@ -49,6 +49,9 @@ class FieldValue:
     def set(self, value):
         self.value = self.field.set(value)
 
+    def is_not_provided(self):
+        return self.value is NOT_PROVIDED
+
 
 class ModelMeta(type):
     def __new__(cls, name, bases, attrs, **kwargs):
@@ -61,6 +64,7 @@ class ModelMeta(type):
         field_names = []
         for field_name, value in list(attrs.items()):
             if Field.is_field(value):
+                value.field_name = field_name
                 fields[field_name] = value
                 field_names.append(field_name)
             else:
@@ -68,11 +72,6 @@ class ModelMeta(type):
 
         new_class = super_new(cls, name, bases, base_attrs, **kwargs)
 
-        # for field_name, field_value in fields.items():
-        #     setattr(new_class, field_name, field_value)
-        #
-        # new_class._meta = {'field_names': field_names}
-        # new_class._meta['fields'] = {name: fields[name] for name in field_names}
         new_class._model_meta = {
             'fields': fields,
             'field_names': field_names,
@@ -83,15 +82,42 @@ class ModelMeta(type):
 
 class Model(metaclass=ModelMeta):
 
-    def __init__(self, **kwargs):
-        source = {**kwargs}
+    def __init__(self, dict_=None, **kwargs):
+        if dict_ is None:
+            dict_ = {}
+        source = {**dict_, **kwargs}
+
         for field_name in self._model_meta['field_names']:
-            field = self._model_meta['fields'][field_name]
+            field: Field = self._model_meta['fields'][field_name]
             field_value = FieldValue(field=field)
             try:
                 value = source.pop(field_name)
-                field_value.set(value)
             except KeyError:
-                pass
+                value = field.get_default()
+
+            field_value.set(value)
 
             self._model_meta['field_values'][field_name] = field_value
+
+    def __getattribute__(self, item):
+        if item in ['_model_meta']:
+            return super().__getattribute__(item)
+
+        if item not in self._model_meta['field_names']:
+            return super().__getattribute__(item)
+
+        field_value: FieldValue = self._model_meta['field_values'][item]
+
+        if field_value.is_not_provided():
+            raise UnassignedOptionalFieldAccessed(f"Optional Field '{item}' was not assigned and was requested")
+
+        return self._model_meta['field_values'][item].get()
+
+    def __setattr__(self, key, value):
+
+        if key not in self._model_meta['field_names']:
+            super().__setattr__(key, value)
+            return
+
+        field_value: FieldValue = self._model_meta['field_values'][key]
+        field_value.set(value)
