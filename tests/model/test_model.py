@@ -18,7 +18,7 @@ def test_fields_initialized_with_defaults():
     assert sample._model_meta['field_values']['test_field_4'].get() == 'World'
 
 
-def test_fields_initilized_with_kwargs():
+def test_fields_initialized_with_kwargs():
     sample = SampleModel(test_field_1="test_1", test_field_3="test_3", test_field_2="Required Feild Dummy Value")
     assert sample._model_meta['field_values']['test_field_1'].get() == 'test_1'
     assert sample._model_meta['field_values']['test_field_3'].get() == 'test_3'
