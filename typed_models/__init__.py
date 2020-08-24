@@ -1,3 +1,3 @@
 from .base import Model
 from .base import Field
-from .base import FieldInstance
+from .base import FieldValue

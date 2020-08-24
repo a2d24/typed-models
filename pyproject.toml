@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "Strongly typed, serializable models for Python"
 authors = ["Imtiaz Mangerah <Imtiaz_Mangerah@a2d24.com>"]
 license = "MIT"
+readme = 'README.rst'
+keywords = ['models', 'serializable', 'typed']
 
 [tool.poetry.dependencies]
 python = "^3.6"
