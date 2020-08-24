@@ -17,10 +17,6 @@ def test_field_attribute_not_copied():
         TestModelMeta.test_field  # noqa
 
 
-def test_field_attributes_added_to_field_names():
-    assert TestModelMeta._model_meta['field_names'] == ['test_field']
-
-
 def test_field_attributes_added_to_metadata():
     assert list(TestModelMeta._model_meta['fields'].keys()) == ['test_field']
     assert isinstance(TestModelMeta._model_meta['fields']['test_field'], Field)

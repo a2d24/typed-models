@@ -59,12 +59,11 @@ class ModelMeta(type):
         base_attrs = {'__module__': module}
 
         fields = {}
-        field_names = []
+
         for field_name, value in list(attrs.items()):
             if Field.is_field(value):
                 value.field_name = field_name
                 fields[field_name] = value
-                field_names.append(field_name)
             else:
                 base_attrs[field_name] = value
 
@@ -72,7 +71,6 @@ class ModelMeta(type):
 
         new_class._model_meta = {
             'fields': fields,
-            'field_names': field_names,
             'field_values': {}
         }
         return new_class
@@ -85,7 +83,7 @@ class Model(metaclass=ModelMeta):
             dict_ = {}
         source = {**dict_, **kwargs}
 
-        for field_name in self._model_meta['field_names']:
+        for field_name in self._model_meta['fields']:
             field: Field = self._model_meta['fields'][field_name]
             field_value = FieldValue(field=field)
             try:
@@ -101,7 +99,7 @@ class Model(metaclass=ModelMeta):
         if item in ['_model_meta']:
             return super().__getattribute__(item)
 
-        if item not in self._model_meta['field_names']:
+        if item not in self._model_meta['fields']:
             return super().__getattribute__(item)
 
         field_value: FieldValue = self._model_meta['field_values'][item]
@@ -113,7 +111,7 @@ class Model(metaclass=ModelMeta):
 
     def __setattr__(self, key, value):
 
-        if key not in self._model_meta['field_names']:
+        if key not in self._model_meta['fields']:
             super().__setattr__(key, value)
             return
 
