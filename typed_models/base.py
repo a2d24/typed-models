@@ -55,8 +55,6 @@ class FieldValue:
 
 class ModelMeta(type):
     def __new__(cls, name, bases, attrs, **kwargs):
-        super_new = super().__new__
-
         module = attrs.pop('__module__')
         base_attrs = {'__module__': module}
 
@@ -70,7 +68,7 @@ class ModelMeta(type):
             else:
                 base_attrs[field_name] = value
 
-        new_class = super_new(cls, name, bases, base_attrs, **kwargs)
+        new_class = super().__new__(cls, name, bases, base_attrs, **kwargs)
 
         new_class._model_meta = {
             'fields': fields,
