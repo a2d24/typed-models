@@ -60,12 +60,12 @@ class ModelMeta(type):
 
         fields = {}
 
-        for field_name, value in list(attrs.items()):
+        for key, value in list(attrs.items()):
             if Field.is_field(value):
-                value.field_name = field_name
-                fields[field_name] = value
+                fields[key] = value
+                fields[key].field_name = key
             else:
-                base_attrs[field_name] = value
+                base_attrs[key] = value
 
         new_class = super().__new__(cls, name, bases, base_attrs, **kwargs)
 
