@@ -8,7 +8,7 @@ class DefaultSerializer:
 
         output = {}
 
-        for field_name, field_value in model._model_meta['field_values'].items():
+        for field_name, field_value in model._field_values.items():
             try:
                 output[field_name] = DefaultSerializer.serialize_field(field_value)
             except UnassignedOptionalFieldRequested:

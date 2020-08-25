@@ -2,6 +2,7 @@ from collections.abc import MutableSequence
 
 from ..exceptions import InvalidFieldArguments
 from ..base import Field, NOT_PROVIDED
+from .model import ModelField
 
 
 class ListField(Field):
@@ -21,7 +22,7 @@ class ListField(Field):
         super().__init__(default_value, optional)
 
     def parse(self, value):
-        if not isinstance(value, list):
+        if not isinstance(value, list) and not isinstance(value, TypedFieldList):
             raise TypeError(
                 f'Field "{self.field_name}" expects a value of type list, however {type(value)} was provided')
 
@@ -33,6 +34,9 @@ class ListField(Field):
         if serializer is NOT_PROVIDED:
             return [self.ListType.default_serializer(v) for v in value]
 
+        if isinstance(self.ListType, ModelField):
+            return [serializer.serialize(v) for v in value]
+
         return [serializer.serialize_field(v) for v in value]
 
 
@@ -43,11 +47,14 @@ class TypedFieldList(MutableSequence):
         self.list = list()
         self.extend(list(args))
 
-    def __len__(self): return len(self.list)
+    def __len__(self):
+        return len(self.list)
 
-    def __getitem__(self, i): return self.list[i]
+    def __getitem__(self, i):
+        return self.list[i]
 
-    def __delitem__(self, i): del self.list[i]
+    def __delitem__(self, i):
+        del self.list[i]
 
     def __setitem__(self, i, v):
         self.list[i] = self.field_type.parse(v)

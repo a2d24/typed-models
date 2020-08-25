@@ -1,4 +1,5 @@
 from .exceptions import DefaultNotProvided, UnassignedOptionalFieldRequested, InvalidFieldArguments
+from .serializer import DefaultSerializer
 
 NOT_PROVIDED = object()
 
@@ -77,11 +78,10 @@ class ModelMeta(type):
             else:
                 base_attrs[key] = value
 
-        new_class = super().__new__(cls, name, bases, base_attrs, **kwargs) # noqa
+        new_class = super().__new__(cls, name, bases, base_attrs, **kwargs)  # noqa
 
         new_class._model_meta = {
             'fields': fields,
-            'field_values': {}
         }
         return new_class
 
@@ -93,6 +93,8 @@ class Model(metaclass=ModelMeta):
             dict_ = {}
         source = {**dict_, **kwargs}
 
+        self._field_values = {}
+
         for field_name in self._model_meta['fields']:
             field: Field = self._model_meta['fields'][field_name]
             field_value = FieldValue(field=field)
@@ -103,16 +105,16 @@ class Model(metaclass=ModelMeta):
 
             field_value.set(value)
 
-            self._model_meta['field_values'][field_name] = field_value
+            self._field_values[field_name] = field_value
 
     def __getattribute__(self, item):
-        if item in ['_model_meta']:
+        if item in ['_model_meta', '_field_values']:
             return super().__getattribute__(item)
 
         if item not in self._model_meta['fields']:
             return super().__getattribute__(item)
 
-        field_value: FieldValue = self._model_meta['field_values'][item]
+        field_value: FieldValue = self._field_values[item]
         return field_value.get()
 
     def __setattr__(self, key, value):
@@ -121,5 +123,8 @@ class Model(metaclass=ModelMeta):
             super().__setattr__(key, value)
             return
 
-        field_value: FieldValue = self._model_meta['field_values'][key]
+        field_value: FieldValue = self._field_values[key]
         field_value.set(value)
+
+    def serialize(self, serializer=DefaultSerializer):
+        return serializer.serialize(self)

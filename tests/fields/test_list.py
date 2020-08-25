@@ -4,6 +4,7 @@ import pendulum
 from typed_models.exceptions import InvalidFieldArguments
 from typed_models.fields import ListField, DateTimeField
 from typed_models.base import FieldValue
+from typed_models.fields.list import TypedFieldList
 
 
 class CustomSerializer:
@@ -82,6 +83,13 @@ def test_custom_serializer():
 
     serialized = field.serialize(result, serializer=CustomSerializer)
     assert serialized == ['2020-01-01T00:00:00+00:00+CUSTOM', '2020-01-02T20:10:00+00:00+CUSTOM']
+
+
+def test_can_parse_typed_field_list():
+    list_type = DateTimeField(tz='UTC')
+    field = ListField(list_type=list_type)
+    typed_field_list = TypedFieldList(field_type=list_type)
+    assert len(field.parse(typed_field_list)) == 0
 
 
 def assert_datetime(

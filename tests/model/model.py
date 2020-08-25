@@ -1,5 +1,5 @@
 from typed_models import Model, Field
-from typed_models.fields import StringField
+from typed_models.fields import StringField, ListField, ModelField
 from typed_models.base import NOT_PROVIDED
 
 class CustomField(StringField):
@@ -15,3 +15,13 @@ class SampleModel(Model):
 
 class SampleModelWithCustomField(Model):
     custom_field = CustomField(optional=True)
+
+
+class Contact(Model):
+    name = StringField()
+    number = StringField()
+
+class Person(Model):
+    first_name = StringField()
+    last_name = StringField()
+    contacts = ListField(list_type=ModelField(model_class=Contact))
