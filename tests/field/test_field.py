@@ -55,3 +55,8 @@ def test_default_setter():
 def test_default_serializer(input, expected):
     field = Field()
     assert field.serialize(input) == expected
+
+def test_raise_value_exception():
+    field = Field()
+    with pytest.raises(ValueError):
+        field._raise_value_error('test')

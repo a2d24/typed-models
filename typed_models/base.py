@@ -37,6 +37,10 @@ class Field:
     def is_field(cls, value):
         return isinstance(value, cls)
 
+    def _raise_value_error(self, value):
+        raise ValueError(
+            f'Field "{self.field_name}" with value "{value}" could not be parsed as a {self.__class__.__name__}') from None
+
 
 class FieldValue:
 
