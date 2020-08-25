@@ -4,3 +4,4 @@ from .integer import IntegerField
 from .float import FloatField
 from .decimal import DecimalField
 from .datetime import DateTimeField
+from .enum import EnumField
