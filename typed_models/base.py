@@ -56,7 +56,8 @@ class FieldValue:
         return self.value
 
     def set(self, value):
-        self.value = self.field.parse(value)
+        if value is not NOT_PROVIDED:
+            self.value = self.field.parse(value)
 
     def is_not_provided(self):
         return self.value is NOT_PROVIDED

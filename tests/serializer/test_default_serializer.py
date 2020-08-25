@@ -1,7 +1,6 @@
 from typed_models.serializer import DefaultSerializer
 
-from ..model.model import SampleModel
-
+from ..model.model import SampleModel, SampleModelWithCustomField
 
 def test_returns_strings():
     sample = SampleModel(test_field_2=1, test_field_3=True)
@@ -30,3 +29,16 @@ def test_returns_assigned_optional_fields():
         'test_field_2': "None",
         'test_field_3': "Hi"
     }
+
+
+
+def test_proxies_to_custom_serializer():
+    instance = SampleModelWithCustomField(custom_field='Hello')
+
+    assert DefaultSerializer.serialize(instance) == {
+        'custom_field': 'Hello-CUSTOM'
+    }
+
+def test_exclude_unassigned_optional_fields_when_proxying():
+    instance = SampleModelWithCustomField()
+    assert DefaultSerializer.serialize(instance) == {}

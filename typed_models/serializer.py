@@ -18,4 +18,9 @@ class DefaultSerializer:
 
     @staticmethod
     def serialize_field(field_value):
+        custom_serializer = getattr(field_value.field, 'serialize', None)
+
+        if custom_serializer:
+            return custom_serializer(field_value.get(), serializer=DefaultSerializer)
+
         return field_value.field.default_serializer(field_value.get())
