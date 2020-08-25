@@ -1,5 +1,8 @@
 class DefaultNotProvided(Exception):
     pass
 
-class UnassignedOptionalFieldAccessed(Exception):
+class UnassignedOptionalFieldRequested(Exception):
+    pass
+
+class InvalidFieldArguments(Exception):
     pass

@@ -3,13 +3,17 @@ from decimal import Decimal
 import pytest
 
 from typed_models import Field
-from typed_models.exceptions import DefaultNotProvided
+from typed_models.exceptions import DefaultNotProvided, InvalidFieldArguments
 from typed_models.base import NOT_PROVIDED
 
 def test_init():
     field = Field()
     assert isinstance(field, Field)
 
+
+def test_cannot_be_optional_and_have_default():
+    with pytest.raises(InvalidFieldArguments):
+        field = Field(optional=True, default="test")
 
 def test_default_not_provided():
     field = Field()

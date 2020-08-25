@@ -1,12 +1,12 @@
 import pytest
 
-from typed_models.exceptions import DefaultNotProvided, UnassignedOptionalFieldAccessed
+from typed_models.exceptions import DefaultNotProvided, UnassignedOptionalFieldRequested
 from typed_models import FieldValue
 
 from .model import SampleModel
 
 
-@pytest.mark.parametrize('field_name', ['test_field_1', 'test_field_2', 'test_field_3', 'test_field_4'])
+@pytest.mark.parametrize('field_name', ['test_field_1', 'test_field_2', 'test_field_3'])
 def test_all_fields_converted_to_field_values(field_name):
     sample = SampleModel(test_field_2="Required Field Dummy Value")
     assert isinstance(sample._model_meta['field_values'][field_name], FieldValue)
@@ -15,7 +15,6 @@ def test_all_fields_converted_to_field_values(field_name):
 def test_fields_initialized_with_defaults():
     sample = SampleModel(test_field_2="Required Field Dummy Value")
     assert sample._model_meta['field_values']['test_field_1'].get() == 'Hello'
-    assert sample._model_meta['field_values']['test_field_4'].get() == 'World'
 
 
 def test_fields_initialized_with_kwargs():
@@ -56,7 +55,7 @@ def test_access_using_attributes():
 
 def test_access_of_unset_optional_field_throws():
     sample = SampleModel(test_field_2="Required Field Dummy Value")
-    with pytest.raises(UnassignedOptionalFieldAccessed):
+    with pytest.raises(UnassignedOptionalFieldRequested):
         sample.test_field_3  # noqa
 
 def test_setting_of_attribute_sets_field_value():

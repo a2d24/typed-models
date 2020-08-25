@@ -1,4 +1,4 @@
-from .exceptions import DefaultNotProvided, UnassignedOptionalFieldAccessed
+from .exceptions import DefaultNotProvided, UnassignedOptionalFieldRequested, InvalidFieldArguments
 
 NOT_PROVIDED = object()
 
@@ -6,6 +6,10 @@ NOT_PROVIDED = object()
 class Field:
 
     def __init__(self, default=NOT_PROVIDED, optional=False):
+
+        if default is not NOT_PROVIDED and optional:
+            raise InvalidFieldArguments(f"'{self.__class__.__name__}' cannot be both optional and have a default")
+
         self.default = default
         self.optional = optional
         self.field_name = 'Field'
@@ -42,7 +46,11 @@ class FieldValue:
 
     def get(self):
         if self.value is NOT_PROVIDED:
-            return self.field.get_default()
+            self.value = self.field.get_default()
+
+        if self.is_not_provided():
+            raise UnassignedOptionalFieldRequested(
+                f"Optional Field '{self.field.field_name}' was not assigned and was requested")
 
         return self.field.get(self.value)
 
@@ -67,7 +75,7 @@ class ModelMeta(type):
             else:
                 base_attrs[key] = value
 
-        new_class = super().__new__(cls, name, bases, base_attrs, **kwargs)
+        new_class = super().__new__(cls, name, bases, base_attrs, **kwargs) # noqa
 
         new_class._model_meta = {
             'fields': fields,
@@ -103,11 +111,7 @@ class Model(metaclass=ModelMeta):
             return super().__getattribute__(item)
 
         field_value: FieldValue = self._model_meta['field_values'][item]
-
-        if field_value.is_not_provided():
-            raise UnassignedOptionalFieldAccessed(f"Optional Field '{item}' was not assigned and was requested")
-
-        return self._model_meta['field_values'][item].get()
+        return field_value.get()
 
     def __setattr__(self, key, value):
 
