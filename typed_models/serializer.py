@@ -18,4 +18,4 @@ class DefaultSerializer:
 
     @staticmethod
     def serialize_field(field_value):
-        return field_value.field.serialize(field_value.get())
+        return field_value.field.default_serializer(field_value.get())

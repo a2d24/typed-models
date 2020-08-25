@@ -7,20 +7,20 @@ from typed_models.fields import IntegerField
 ])
 def test_setters(input, expected_output):
     field = IntegerField()
-    assert field.set(input) == expected_output
+    assert field.parse(input) == expected_output
 
 
 def test_unparsable_raises_exception():
     field = IntegerField()
 
     with pytest.raises(ValueError):
-        field.set('1.5')
+        field.parse('1.5')
 
     with pytest.raises(ValueError):
-        field.set('hello')
+        field.parse('hello')
 
 
 def test_serializer():
     field = IntegerField()
-    assert field.serialize(1) == 1
-    assert field.serialize(-1) == -1
+    assert field.default_serializer(1) == 1
+    assert field.default_serializer(-1) == -1

@@ -24,13 +24,10 @@ class Field:
 
         raise DefaultNotProvided(f"Field '{self.field_name}' has no default specified and is not optional")
 
-    def get(self, value):
+    def parse(self, value):
         return value
 
-    def set(self, value):
-        return value
-
-    def serialize(self, value):
+    def default_serializer(self, value):
         return str(value)
 
     @classmethod
@@ -56,10 +53,10 @@ class FieldValue:
             raise UnassignedOptionalFieldRequested(
                 f"Optional Field '{self.field.field_name}' was not assigned and was requested")
 
-        return self.field.get(self.value)
+        return self.value
 
     def set(self, value):
-        self.value = self.field.set(value)
+        self.value = self.field.parse(value)
 
     def is_not_provided(self):
         return self.value is NOT_PROVIDED

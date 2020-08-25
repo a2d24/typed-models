@@ -31,14 +31,9 @@ def test_optional_default_not_provided():
     assert field.get_default() == NOT_PROVIDED
 
 
-def test_default_getter():
+def test_default_parse():
     field = Field()
-    assert field.get("test") == "test"
-
-
-def test_default_setter():
-    field = Field()
-    assert field.set("test") == "test"
+    assert field.parse("test") == "test"
 
 
 @pytest.mark.parametrize(
@@ -54,7 +49,7 @@ def test_default_setter():
 )
 def test_default_serializer(input, expected):
     field = Field()
-    assert field.serialize(input) == expected
+    assert field.default_serializer(input) == expected
 
 def test_raise_value_exception():
     field = Field()

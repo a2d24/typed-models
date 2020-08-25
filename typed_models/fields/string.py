@@ -2,5 +2,5 @@ from ..base import Field
 
 class StringField(Field):
 
-    def set(self, value):
+    def parse(self, value):
         return str(value)

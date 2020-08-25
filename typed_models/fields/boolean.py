@@ -2,7 +2,7 @@ from ..base import Field
 
 class BooleanField(Field):
 
-    def set(self, value):
+    def parse(self, value):
         if isinstance(value, bool):
             return value
 
@@ -14,5 +14,5 @@ class BooleanField(Field):
 
         self._raise_value_error(value)
 
-    def serialize(self, value):
+    def default_serializer(self, value):
         return value

@@ -7,4 +7,4 @@ from typed_models.fields import StringField
 ])
 def test_setters(input, expected_output):
     field = StringField()
-    assert field.set(input) == expected_output
+    assert field.parse(input) == expected_output

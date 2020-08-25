@@ -8,15 +8,15 @@ from typed_models.fields import BooleanField
 ])
 def test_setters(input, expected_output):
     field = BooleanField()
-    assert field.set(input) == expected_output
+    assert field.parse(input) == expected_output
 
 def test_unparsable_raises_exception():
     field = BooleanField()
 
     with pytest.raises(ValueError):
-        field.set('1')
+        field.parse('1')
 
 def test_serializer():
     field = BooleanField()
-    assert field.serialize(True) == True
-    assert field.serialize(False) == False
+    assert field.default_serializer(True) == True
+    assert field.default_serializer(False) == False

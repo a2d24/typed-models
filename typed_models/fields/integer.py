@@ -2,11 +2,11 @@ from ..base import Field
 
 class IntegerField(Field):
 
-    def set(self, value):
+    def parse(self, value):
         try:
             return int(value)
         except (TypeError, ValueError):
             self._raise_value_error(value)
 
-    def serialize(self, value):
+    def default_serializer(self, value):
         return value
