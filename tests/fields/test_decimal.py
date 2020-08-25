@@ -6,7 +6,12 @@ from typed_models.fields import DecimalField
 
 
 @pytest.mark.parametrize('input, expected_output', [
-    (1, Decimal(1)), ('1.0', Decimal('1.0')), (0.33, Decimal('0.33')), (-1.33, Decimal('-1.33')), (5-2, Decimal('3'))
+    (1, Decimal(1)),
+    ('1.0', Decimal('1.0')),
+    (0.33, Decimal('0.33')),
+    (-1.33, Decimal('-1.33')),
+    (5 - 2, Decimal('3')),
+    (Decimal('1'), Decimal('1'))
 ])
 def test_setters(input, expected_output):
     field = DecimalField()

@@ -2,7 +2,7 @@ import pytest
 import pendulum
 
 from typed_models.exceptions import InvalidFieldArguments
-from typed_models.fields import ListField, DateTimeField
+from typed_models.fields import ListField, DateTimeField, StringField
 from typed_models.base import FieldValue
 from typed_models.fields.list import TypedFieldList
 
@@ -90,6 +90,30 @@ def test_can_parse_typed_field_list():
     field = ListField(list_type=list_type)
     typed_field_list = TypedFieldList(field_type=list_type)
     assert len(field.parse(typed_field_list)) == 0
+
+
+def test_can_delete_item():
+    field = ListField(list_type=StringField())
+    list = field.parse([])
+
+    list.append("Hello")
+    list.append("World")
+    list.append("Test")
+
+    del list[2]
+
+    assert [l for l in list] == ['Hello', 'World']
+
+def test_can_replace_item():
+    field = ListField(list_type=StringField())
+    list = field.parse(['Hello', 'Wrong'])
+    list[1] = 'World'
+    assert [l for l in list] == ['Hello', 'World']
+
+def test_list_str_representation():
+    field = ListField(list_type=StringField())
+    list = field.parse(['Hello', 'World'])
+    assert str(list) == "['Hello', 'World']"
 
 
 def assert_datetime(
