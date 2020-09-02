@@ -71,6 +71,12 @@ class ModelMeta(type):
 
         fields = {}
 
+        for base in bases:
+            base_model_meta = getattr(base, '_model_meta', None)
+            if base_model_meta:
+                fields = {**fields, **base_model_meta.get('fields', {})}
+
+
         for key, value in list(attrs.items()):
             if Field.is_field(value):
                 fields[key] = value

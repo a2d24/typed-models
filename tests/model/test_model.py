@@ -3,7 +3,7 @@ import pytest
 from typed_models.exceptions import DefaultNotProvided, UnassignedOptionalFieldRequested
 from typed_models import FieldValue
 
-from .model import SampleModel, Contact, Person
+from .model import SampleModel, Contact, Person, AwesomePerson
 
 
 @pytest.mark.parametrize('field_name', ['test_field_1', 'test_field_2', 'test_field_3'])
@@ -105,3 +105,10 @@ def test_can_serialize_models():
             }
         ]
     }
+
+def test_inherits_bases():
+    awesome_person = AwesomePerson(first_name="Jane", last_name="Doe")
+
+    assert awesome_person.first_name == "Jane"
+    assert awesome_person.last_name == "Doe"
+    assert awesome_person.is_awesome == True
