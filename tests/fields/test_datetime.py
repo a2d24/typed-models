@@ -2,6 +2,7 @@ import pytest
 import pendulum
 
 from typed_models.fields import DateTimeField
+from typed_models.fields.datetime import NOT_PROVIDED
 
 
 @pytest.mark.parametrize('input, expected_output', [
@@ -28,7 +29,6 @@ def test_setters_tz(tz, input, expected_output):
     assert isinstance(parsed, pendulum.DateTime)
 
 
-
 def test_unparsable_raises_exception():
     field = DateTimeField()
 
@@ -45,6 +45,7 @@ def test_serializer():
     assert field.default_serializer(field.parse("2020-01-01T05:00:00")) == "2020-01-01T05:00:00+00:00"
     assert field.default_serializer(field.parse("2020-01-01")) == "2020-01-01T00:00:00+00:00"
 
+
 def test_auto_now():
     field = DateTimeField(default=DateTimeField.AUTO_NOW)
     start_time = pendulum.now()
@@ -53,6 +54,7 @@ def test_auto_now():
 
     assert start_time < auto_time
     assert end_time > auto_time
+
 
 def test_defaut():
     field_1 = DateTimeField(default='2020-01-01T00:00:00Z')
@@ -64,3 +66,8 @@ def test_default_handles_timezone():
     field_2 = DateTimeField(default=current_time, tz='Africa/Johannesburg')
     assert field_2.get_default() == current_time
     assert field_2.get_default().tz.name == 'Africa/Johannesburg'
+
+
+def test_optional_datetime_default_returns_not_provided():
+    field = DateTimeField(optional=True)
+    assert field.get_default() == NOT_PROVIDED
