@@ -27,4 +27,8 @@ class DateTimeField(Field):
         if self.default == self.AUTO_NOW:
             return self._set_tz(pendulum.now())
 
-        return self.parse(super().get_default())
+        default = super().get_default()
+        if default is NOT_PROVIDED:
+            return default
+
+        return self.parse(default)

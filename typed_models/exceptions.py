@@ -1,6 +1,5 @@
 class DefaultNotProvided(Exception):
     pass
-
 class UnassignedOptionalFieldRequested(Exception):
     pass
 
