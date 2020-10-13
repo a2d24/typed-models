@@ -1,6 +1,6 @@
 from typed_models.serializer import DefaultSerializer
 
-from ..model.model import SampleModel, SampleModelWithCustomField
+from ..model.model import SampleModel, SampleModelWithCustomField, SimpleList
 
 def test_returns_strings():
     sample = SampleModel(test_field_2=1, test_field_3=True)
@@ -37,6 +37,13 @@ def test_proxies_to_custom_serializer():
 
     assert DefaultSerializer.serialize(instance) == {
         'custom_field': 'Hello-CUSTOM'
+    }
+
+def test_default_serializer_does_not_proxy():
+    simple_list = SimpleList(list=["Hello", "World"])
+
+    assert DefaultSerializer.serialize(simple_list) == {
+        "list": ["Hello", "World"]
     }
 
 def test_exclude_unassigned_optional_fields_when_proxying():

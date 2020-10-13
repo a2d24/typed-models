@@ -29,3 +29,6 @@ class Person(Model):
 
 class AwesomePerson(Person):
     is_awesome = BooleanField(default=True)
+
+class SimpleList(Model):
+    list = ListField(list_type=StringField())
