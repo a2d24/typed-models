@@ -10,7 +10,7 @@ from typed_models.fields.list import TypedFieldList
 class CustomSerializer:
     @staticmethod
     def serialize_field(f):
-        return str(f) + '+CUSTOM'
+        return str(f.get()) + '+CUSTOM'
 
 
 def test_init_requires_list_type():
@@ -44,9 +44,9 @@ def test_strongly_typed_list():
     now_in_utc = now.in_tz('UTC')
     result = field.parse(['2020-01-01', '2020-01-02T22:10+0200', now])
 
-    assert_datetime(result[0], 2020, 1, 1)
-    assert_datetime(result[1], 2020, 1, 2, hour=20, minute=10)
-    assert_datetime(result[2],
+    assert_datetime(result[0].get(), 2020, 1, 1)
+    assert_datetime(result[1].get(), 2020, 1, 2, hour=20, minute=10)
+    assert_datetime(result[2].get(),
                     now_in_utc.year,
                     now_in_utc.month,
                     now_in_utc.day,
@@ -102,13 +102,13 @@ def test_can_delete_item():
 
     del list[2]
 
-    assert [l for l in list] == ['Hello', 'World']
+    assert [l.get() for l in list] == ['Hello', 'World']
 
 def test_can_replace_item():
     field = ListField(list_type=StringField())
     list = field.parse(['Hello', 'Wrong'])
     list[1] = 'World'
-    assert [l for l in list] == ['Hello', 'World']
+    assert [l.get() for l in list] == ['Hello', 'World']
 
 def test_list_str_representation():
     field = ListField(list_type=StringField())

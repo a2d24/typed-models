@@ -1,7 +1,7 @@
 from collections.abc import MutableSequence
 
 from ..exceptions import InvalidFieldArguments
-from ..base import Field, NOT_PROVIDED
+from ..base import Field, NOT_PROVIDED, FieldValue
 from .model import ModelField
 
 
@@ -32,10 +32,10 @@ class ListField(Field):
 
     def serialize(self, value, serializer=NOT_PROVIDED):
         if serializer is NOT_PROVIDED:
-            return [self.ListType.default_serializer(v) for v in value]
+            return [self.ListType.default_serializer(v.get()) for v in value]
 
         if isinstance(self.ListType, ModelField):
-            return [serializer.serialize(v) for v in value]
+            return [serializer.serialize(v.get()) for v in value]
 
         return [serializer.serialize_field(v) for v in value]
 
@@ -57,10 +57,15 @@ class TypedFieldList(MutableSequence):
         del self.list[i]
 
     def __setitem__(self, i, v):
-        self.list[i] = self.field_type.parse(v)
+        field_value = FieldValue(field=self.field_type)
+        field_value.set(v)
+        self.list[i] = field_value
 
     def insert(self, i, v):
-        self.list.insert(i, self.field_type.parse(v))
+        field_value = FieldValue(field=self.field_type)
+        field_value.set(v)
+
+        self.list.insert(i, field_value)
 
     def __str__(self):
-        return str(self.list)
+        return str([str(i.get()) for i in self.list])
