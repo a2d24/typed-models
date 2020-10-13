@@ -39,6 +39,11 @@ class Field:
         raise ValueError(
             f'Field "{self.field_name}" with value "{value}" could not be parsed as a {self.__class__.__name__}') from None
 
+    def get(self, field_value):
+        return field_value.get()
+
+    def set(self, field_value, value):
+        field_value.set(value)
 
 class FieldValue:
 
@@ -109,7 +114,7 @@ class Model(metaclass=ModelMeta):
             except KeyError:
                 value = field.get_default()
 
-            field_value.set(value)
+            field.set(field_value, value)
 
             self._field_values[field_name] = field_value
 
@@ -120,8 +125,9 @@ class Model(metaclass=ModelMeta):
         if item not in self._model_meta['fields']:
             return super().__getattribute__(item)
 
+        field: Field = self._model_meta['fields'][item]
         field_value: FieldValue = self._field_values[item]
-        return field_value.get()
+        return field.get(field_value)
 
     def __setattr__(self, key, value):
 
@@ -129,8 +135,10 @@ class Model(metaclass=ModelMeta):
             super().__setattr__(key, value)
             return
 
+        field: Field = self._model_meta['fields'][key]
+
         field_value: FieldValue = self._field_values[key]
-        field_value.set(value)
+        field.set(field_value, value)
 
     def serialize(self, serializer=DefaultSerializer):
         return serializer.serialize(self)

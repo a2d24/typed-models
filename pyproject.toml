@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "typed-models"
-version = "0.2.2"
+version = "0.2.3"
 description = "Strongly typed, lightweight, serializable models for Python"
 authors = ["Imtiaz Mangerah <Imtiaz_Mangerah@a2d24.com>"]
 license = "MIT"

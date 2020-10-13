@@ -32,12 +32,13 @@ class ListField(Field):
 
     def serialize(self, value, serializer=NOT_PROVIDED):
         if serializer is NOT_PROVIDED:
-            return [self.ListType.default_serializer(v.get()) for v in value]
+            return [self.ListType.default_serializer(v) for v in value]
 
         if isinstance(self.ListType, ModelField):
-            return [serializer.serialize(v.get()) for v in value]
+            return [serializer.serialize(v) for v in value]
 
-        return [serializer.serialize_field(v) for v in value]
+        raw_fields = [value.get_raw(i) for i in range(len(value))]
+        return [serializer.serialize_field(v) for v in raw_fields]
 
 
 class TypedFieldList(MutableSequence):
@@ -51,7 +52,7 @@ class TypedFieldList(MutableSequence):
         return len(self.list)
 
     def __getitem__(self, i):
-        return self.list[i]
+        return self.list[i].get()
 
     def __delitem__(self, i):
         del self.list[i]
@@ -66,6 +67,9 @@ class TypedFieldList(MutableSequence):
         field_value.set(v)
 
         self.list.insert(i, field_value)
+
+    def get_raw(self, i):
+        return self.list[i]
 
     def __str__(self):
         return str([str(i.get()) for i in self.list])
