@@ -1,5 +1,5 @@
 import pendulum
-
+from pendulum.exceptions import ParserError
 from ..base import Field, NOT_PROVIDED
 
 
@@ -17,7 +17,7 @@ class DateTimeField(Field):
 
         try:
             return self._set_tz(pendulum.parse(value))
-        except (pendulum.exceptions.ParserError, TypeError):
+        except (ParserError, TypeError):
             self._raise_value_error(value)
 
     def _set_tz(self, dt):
@@ -32,3 +32,6 @@ class DateTimeField(Field):
             return default
 
         return self.parse(default)
+
+    def default_serializer(self, value):
+        return value.isoformat()

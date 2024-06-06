@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from ..base import Field
 
+
 class DecimalField(Field):
 
     def parse(self, value):

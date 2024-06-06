@@ -1,5 +1,6 @@
 from ..base import Field
 
+
 class BooleanField(Field):
 
     def parse(self, value):

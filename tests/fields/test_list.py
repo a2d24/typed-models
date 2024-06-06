@@ -88,7 +88,7 @@ def test_custom_serializer():
     result = field.parse(['2020-01-01', '2020-01-02T22:10+0200'])
 
     serialized = field.serialize(result, serializer=CustomSerializer)
-    assert serialized == ['2020-01-01T00:00:00+00:00+CUSTOM', '2020-01-02T20:10:00+00:00+CUSTOM']
+    assert serialized == ['2020-01-01 00:00:00+00:00+CUSTOM', '2020-01-02 20:10:00+00:00+CUSTOM']
 
 
 def test_can_parse_typed_field_list():
