@@ -38,14 +38,7 @@ class ListField(Field):
             return [serializer.serialize(v) for v in value]
 
         raw_fields = [value.get_raw(i) for i in range(len(value))]
-        return [
-            serializer.serialize_field(
-                FieldValue(
-                    field=v.field,
-                    value=v.field.default_serializer(v.value)
-                )
-            ) for v in raw_fields
-        ]
+        return [serializer.serialize_field(v) for v in raw_fields]
 
 
 class TypedFieldList(MutableSequence):
