@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "typed-models"
-version = "1.0.0"
+version = "1.0.1"
 description = "Strongly typed, lightweight, serializable models for Python"
 authors = ["Imtiaz Mangerah <Imtiaz_Mangerah@a2d24.com>"]
 license = "MIT"
@@ -11,14 +11,14 @@ repository = "https://github.com/a2d24/typed-models"
 documentation = "https://github.com/a2d24/typed-models"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.8"
 pendulum = "^3.0.0"
-six = "1.16.0"
 
 [tool.poetry.dev-dependencies]
 pygments = "^2.6.1"
 pytest-cov = "^2.10.1"
 pytest = "^6.0.1"
+tox = "^4.15.1"
 
 [build-system]
 requires = ["poetry>=0.12"]

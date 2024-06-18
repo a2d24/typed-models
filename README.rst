@@ -13,3 +13,9 @@ and install the required dependencies via `poetry <https://poetry.eustace.io>`_.
 
     $ git clone git@github.com:a2d24/typed-models.git
     $ poetry install
+
+To test against multiple versions. Run the following command:
+
+.. code-block:: bash
+
+    $ tox -p
